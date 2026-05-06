@@ -1,13 +1,14 @@
-import { Routes, Route } from "react-router-dom"
+import { BrowserRouter, Routes, Route } from "react-router-dom"
 import Navbar from "./components/Navbar"
 import HomePage from "./pages/HomePage"
 import PopularPage from "./pages/PopularPage"
 import TopRatedPage from "./pages/TopRatedPage"
 import DetailPage from "./pages/DetailPage"
+import SearchPage from "./pages/SearchPage"
 
 function App() {
   return (
-   
+    
       <div className="min-h-screen" style={{ background: 'linear-gradient(135deg, #09090b 0%, #0f0f1a 50%, #0a0a0f 100%)' }}>
         <Navbar />
         <Routes>
@@ -15,6 +16,7 @@ function App() {
           <Route path="/popular" element={<PopularPage />} />
           <Route path="/top-rated" element={<TopRatedPage />} />
           <Route path="/movie/:id" element={<DetailPage />} />
+          <Route path="/search" element={<SearchPage />} />
         </Routes>
       </div>
    

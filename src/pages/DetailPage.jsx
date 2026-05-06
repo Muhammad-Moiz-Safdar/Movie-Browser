@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 import { useParams } from "react-router-dom"
-import { fetchMovieDetails, fetchMovieCredits } from "../api/tmdb"
+import { fetchMovieDetails, fetchMovieCredits, fetchMovieTrailer } from "../api/tmdb"
+import TrailerModal from "../components/TrailerModal"
 
 const IMAGE_BASE = import.meta.env.VITE_TMDB_IMAGE_BASE
 const BACKDROP_BASE = "https://image.tmdb.org/t/p/w1280"
@@ -9,17 +10,28 @@ function DetailPage() {
   const { id } = useParams()
   const [movie, setMovie] = useState(null)
   const [cast, setCast] = useState([])
+  const [trailerKey, setTrailerKey] = useState(null)
+  const [showModal, setShowModal] = useState(false)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const loadData = async () => {
       try {
-        const [movieData, creditsData] = await Promise.all([
+        const [movieData, creditsData, videosData] = await Promise.all([
           fetchMovieDetails(id),
           fetchMovieCredits(id),
+          fetchMovieTrailer(id),
         ])
+
         setMovie(movieData)
         setCast(creditsData.cast.slice(0, 10))
+
+        // find the official YouTube trailer
+        const trailer = videosData.find(
+          (v) => v.type === "Trailer" && v.site === "YouTube"
+        )
+        if (trailer) setTrailerKey(trailer.key)
+
       } catch (err) {
         console.error("Something went wrong", err)
       } finally {
@@ -33,7 +45,6 @@ function DetailPage() {
   if (loading) return <p className="text-white text-center mt-20">Loading...</p>
   if (!movie) return <p className="text-white text-center mt-20">Movie not found</p>
 
-  // convert minutes to hours and minutes
   const hours = Math.floor(movie.runtime / 60)
   const minutes = movie.runtime % 60
 
@@ -47,19 +58,14 @@ function DetailPage() {
           alt={movie.title}
           className="w-full h-full object-cover"
         />
-        {/* dark overlay so text is readable */}
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/60 to-[#09090b]" />
 
-        {/* Title block over backdrop */}
         <div className="absolute bottom-0 left-0 right-0 flex gap-6 items-end px-8 pb-6">
-          {/* Poster */}
           <img
             src={`${IMAGE_BASE}${movie.poster_path}`}
             alt={movie.title}
             className="w-28 rounded-xl border-2 border-zinc-700 hidden sm:block"
           />
-
-          {/* Info */}
           <div>
             <h1 className="text-white text-3xl font-bold mb-1">{movie.title}</h1>
             <p className="text-zinc-400 text-sm mb-2">
@@ -88,7 +94,10 @@ function DetailPage() {
         </div>
 
         {/* Trailer Button */}
-        <button className="flex items-center gap-2 bg-yellow-400 hover:bg-yellow-300 text-black font-semibold text-sm px-5 py-3 rounded-lg transition-colors mb-6">
+        <button
+          onClick={() => setShowModal(true)}
+          className="flex items-center gap-2 bg-yellow-400 hover:bg-yellow-300 text-black font-semibold text-sm px-5 py-3 rounded-lg transition-colors mb-6"
+        >
           <svg className="w-4 h-4 fill-black" viewBox="0 0 24 24">
             <path d="M5 3l14 9-14 9V3z" />
           </svg>
@@ -107,7 +116,6 @@ function DetailPage() {
           <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
             {cast.map((person) => (
               <div key={person.id} className="min-w-[80px] text-center">
-                {/* Avatar */}
                 <div className="w-16 h-16 rounded-full overflow-hidden bg-zinc-800 border border-zinc-700 mx-auto mb-2">
                   {person.profile_path ? (
                     <img
@@ -131,6 +139,16 @@ function DetailPage() {
         </div>
 
       </div>
+
+      {/* Trailer Modal — only renders when showModal is true */}
+      {showModal && (
+        <TrailerModal
+          trailerKey={trailerKey}
+          movieTitle={movie.title}
+          onClose={() => setShowModal(false)}
+        />
+      )}
+
     </div>
   )
 }

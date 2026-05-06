@@ -24,3 +24,14 @@ export const fetchUpcomingMovies = async () => {
   const data = await res.json()
   return data
 }
+export const fetchMovieDetails = async (id) => {
+  const res = await fetch(`${BASE_URL}/movie/${id}?api_key=${API_KEY}`)
+  const data = await res.json()
+  return data
+}
+
+export const fetchMovieCredits = async (id) => {
+  const res = await fetch(`${BASE_URL}/movie/${id}/credits?api_key=${API_KEY}`)
+  const data = await res.json()
+  return data
+}

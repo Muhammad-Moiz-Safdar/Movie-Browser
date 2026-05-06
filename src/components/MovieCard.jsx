@@ -1,8 +1,19 @@
+import { useNavigate } from "react-router-dom"
+
 const IMAGE_BASE = import.meta.env.VITE_TMDB_IMAGE_BASE
 
 function MovieCard({ movie }) {
+  const navigate = useNavigate()
+
+  const handleClick = () => {
+    navigate(`/movie/${movie.id}`)
+  }
+
   return (
-    <div className="min-w-[140px] bg-zinc-800 rounded-xl overflow-hidden cursor-pointer hover:scale-105 transition-transform duration-200">
+    <div
+      onClick={handleClick}
+      className="min-w-[140px] bg-zinc-800 rounded-xl overflow-hidden cursor-pointer hover:scale-105 transition-transform duration-200"
+    >
 
       {/* Poster */}
       {movie.poster_path ? (

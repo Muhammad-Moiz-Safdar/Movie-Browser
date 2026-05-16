@@ -1,10 +1,11 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom"
+import { Routes, Route } from "react-router-dom"
 import Navbar from "./components/Navbar"
 import HomePage from "./pages/HomePage"
 import PopularPage from "./pages/PopularPage"
 import TopRatedPage from "./pages/TopRatedPage"
 import DetailPage from "./pages/DetailPage"
 import SearchPage from "./pages/SearchPage"
+import BrowsePage from "./pages/BrowsePage"
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           <Route path="/top-rated" element={<TopRatedPage />} />
           <Route path="/movie/:id" element={<DetailPage />} />
           <Route path="/search" element={<SearchPage />} />
+          <Route path="/browse" element={<BrowsePage />} />
         </Routes>
       </div>
    

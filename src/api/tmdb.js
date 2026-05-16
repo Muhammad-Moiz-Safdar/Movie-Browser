@@ -45,3 +45,17 @@ export const searchMovies = async (query) => {
   const data = await res.json()
   return data
 }
+export const fetchGenres = async () => {
+  const res = await fetch(`${BASE_URL}/genre/movie/list?api_key=${API_KEY}`)
+  const data = await res.json()
+  return data.genres
+}
+
+export const fetchMoviesByGenre = async (genreId, sortBy, page = 1) => {
+  const genreParam = genreId ? `&with_genres=${genreId}` : ""
+  const res = await fetch(
+    `${BASE_URL}/discover/movie?api_key=${API_KEY}&sort_by=${sortBy}&page=${page}${genreParam}`
+  )
+  const data = await res.json()
+  return data
+}

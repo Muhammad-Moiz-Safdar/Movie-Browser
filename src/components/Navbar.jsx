@@ -27,32 +27,42 @@ function Navbar() {
         <NavLink
           to="/"
           className={({ isActive }) =>
-    isActive
-      ? "text-amber-600 font-semibold text-sm"
-      : "text-zinc-400 hover:text-white transition-colors text-sm"
-  }
+            isActive
+              ? "text-amber-600 font-semibold text-sm"
+              : "text-zinc-400 hover:text-white transition-colors text-sm"
+          }
         >
           Home
         </NavLink>
         <NavLink
           to="/popular"
           className={({ isActive }) =>
-    isActive
-      ? "text-amber-600 font-semibold text-sm"
-      : "text-zinc-400 hover:text-white transition-colors text-sm"
-  }
+            isActive
+              ? "text-amber-600 font-semibold text-sm"
+              : "text-zinc-400 hover:text-white transition-colors text-sm"
+          }
         >
           Popular
         </NavLink>
         <NavLink
           to="/top-rated"
           className={({ isActive }) =>
-    isActive
-      ? "text-amber-600 font-semibold text-sm"
-      : "text-zinc-400 hover:text-white transition-colors text-sm"
-  }
+            isActive
+              ? "text-amber-600 font-semibold text-sm"
+              : "text-zinc-400 hover:text-white transition-colors text-sm"
+          }
         >
           Top Rated
+        </NavLink>
+        <NavLink
+          to="/browse"
+         className={({ isActive }) =>
+            isActive
+              ? "text-amber-600 font-semibold text-sm"
+              : "text-zinc-400 hover:text-white transition-colors text-sm"
+          }
+        >
+          Browse
         </NavLink>
       </div>
 

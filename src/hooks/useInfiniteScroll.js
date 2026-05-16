@@ -1,37 +1,54 @@
-import { useState, useEffect, useRef} from "react"
+import { useState, useEffect, useRef } from "react"
 
-function useInfiniteScroll(fetchFn) {
+function useInfiniteScroll(fetchFn, dependencies = []) {
   const [movies, setMovies] = useState([])
   const [page, setPage] = useState(1)
   const [loading, setLoading] = useState(false)
   const [hasMore, setHasMore] = useState(true)
   const sentinelRef = useRef(null)
-
-  // fetch movies whenever page number changes
-  useEffect(() => {
-    const loadMovies = async () => {
-      setLoading(true)
-      try {
-        const data = await fetchFn(page)
-        setMovies((prev) => [...prev, ...data.results])
-        setHasMore(page < data.total_pages)
-      } catch (err) {
-        console.error("Something went wrong", err)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    loadMovies()
-  }, [page])
-
-  // Intersection Observer watches the sentinel div
   const observer = useRef(null)
+  const isFirstRender = useRef(true)
 
+  // reset ONLY when genre or sort changes
+  // not when page changes
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false
+      return
+    }
+    setMovies([])
+    setPage(1)
+    setHasMore(true)
+  }, dependencies)
+
+  // fetch movies when page changes
+  useEffect(() => {
+  const loadMovies = async () => {
+    setLoading(true)
+    try {
+      const data = await fetchFn(page)
+    
+      setMovies((prev) => {
+        const existingIds = new Set(prev.map((m) => m.id))
+        const newMovies = data.results.filter((m) => !existingIds.has(m.id))
+      
+        return [...prev, ...newMovies]
+      })
+      setHasMore(page < data.total_pages)
+     
+    } catch (err) {
+      console.error("Something went wrong", err)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  loadMovies()
+}, [page])
+
+  // intersection observer
   useEffect(() => {
     if (loading) return
-
-    // disconnect previous observer before creating new one
     if (observer.current) observer.current.disconnect()
 
     observer.current = new IntersectionObserver((entries) => {

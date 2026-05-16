@@ -41,13 +41,33 @@ function HomePage() {
   if (loading) return <p className="text-white text-center mt-20">Loading...</p>
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#10102e9b] via-[#13134b8d] to-[#1a1a6088] py-8">
-      <MovieRow title="Trending Today" emoji="🔥" movies={trending} />
-      <MovieRow title="Top Rated" emoji="⭐" movies={topRated} />
-      <MovieRow title="Popular" emoji="🎬" movies={popular} />
-      <MovieRow title="Upcoming" emoji="🆕" movies={upcoming} />
-    </div>
-  )
+  <div className="py-8">
+    <MovieRow
+      title="Trending Today"
+      emoji="🔥"
+      movies={trending}
+      seeAllLink="/browse"
+    />
+    <MovieRow
+      title="Top Rated"
+      emoji="⭐"
+      movies={topRated}
+      seeAllLink="/top-rated"
+    />
+    <MovieRow
+      title="Popular"
+      emoji="🎬"
+      movies={popular}
+      seeAllLink="/popular"
+    />
+    <MovieRow
+      title="Upcoming"
+      emoji="🆕"
+      movies={upcoming}
+      seeAllLink="/browse"
+    />
+  </div>
+)
 }
 
 export default HomePage

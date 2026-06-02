@@ -15,7 +15,6 @@ function BrowsePage() {
   const [selectedGenre, setSelectedGenre] = useState(null)
   const [sortBy, setSortBy] = useState("popularity.desc")
 
-  // fetch genres once when page loads
   useEffect(() => {
     const loadGenres = async () => {
       try {
@@ -28,26 +27,30 @@ function BrowsePage() {
     loadGenres()
   }, [])
 
-  // infinite scroll with genre and sort as dependencies
   const { movies, loading, hasMore, sentinelRef } = useInfiniteScroll(
-  (page) => fetchMoviesByGenre(selectedGenre, sortBy, page),
-  [selectedGenre, sortBy]
-)
+    (page) => fetchMoviesByGenre(selectedGenre, sortBy, page),
+    [selectedGenre, sortBy]
+  )
 
   return (
-    <div className="px-8 py-8">
+    <div className="px-4 md:px-8 py-5 md:py-8">
 
       {/* Top bar */}
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-white text-2xl font-semibold">Browse Movies</h2>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 md:mb-6">
+
+        <h2 className="text-white text-xl md:text-2xl font-semibold">
+          Browse Movies
+        </h2>
 
         {/* Sort dropdown */}
-        <div className="flex items-center gap-3">
-          <span className="text-zinc-400 text-sm">Sort by</span>
+        <div className="flex items-center gap-2">
+          <span className="text-zinc-400 text-xs md:text-sm whitespace-nowrap">
+            Sort by
+          </span>
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
-            className="bg-zinc-800 border border-zinc-700 text-white text-sm px-3 py-2 rounded-lg outline-none cursor-pointer"
+            className="flex-1 sm:flex-none bg-zinc-800 border border-zinc-700 text-white text-xs md:text-sm px-3 py-2 rounded-lg outline-none cursor-pointer"
           >
             {SORT_OPTIONS.map((option) => (
               <option key={option.value} value={option.value}>
@@ -59,15 +62,15 @@ function BrowsePage() {
       </div>
 
       {/* Genre chips */}
-      <div className="flex gap-2 flex-wrap mb-8">
+      <div className="flex gap-2 flex-wrap mb-5 md:mb-8">
 
         {/* All chip */}
         <button
           onClick={() => setSelectedGenre(null)}
-          className={`px-4 py-1.5 rounded-full text-xs font-medium border transition-colors ${
+          className={`px-3 md:px-4 py-1.5 rounded-full text-xs font-medium border transition-colors ${
             selectedGenre === null
               ? "bg-yellow-400 text-black border-yellow-400"
-              : "bg-zinc-800 text-zinc-400 border-zinc-700 hover:border-zinc-500"
+              : "bg-zinc-800 text-zinc-400 border-zinc-700 hover:border-zinc-500 active:bg-zinc-700"
           }`}
         >
           All
@@ -78,10 +81,10 @@ function BrowsePage() {
           <button
             key={genre.id}
             onClick={() => setSelectedGenre(genre.id)}
-            className={`px-4 py-1.5 rounded-full text-xs font-medium border transition-colors ${
+            className={`px-3 md:px-4 py-1.5 rounded-full text-xs font-medium border transition-colors ${
               selectedGenre === genre.id
                 ? "bg-yellow-400 text-black border-yellow-400"
-                : "bg-zinc-800 text-zinc-400 border-zinc-700 hover:border-zinc-500"
+                : "bg-zinc-800 text-zinc-400 border-zinc-700 hover:border-zinc-500 active:bg-zinc-700"
             }`}
           >
             {genre.name}
@@ -90,21 +93,16 @@ function BrowsePage() {
       </div>
 
       {/* Movie grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5">
-
-        {/* Movie cards */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-5">
         {movies.map((movie) => (
           <MovieCard key={movie.id} movie={movie} />
         ))}
-
-        {/* Skeleton cards while loading */}
         {loading && Array.from({ length: 10 }).map((_, i) => (
           <SkeletonCard key={i} />
         ))}
-
       </div>
 
-      {/* Sentinel div */}
+      {/* Sentinel */}
       {hasMore && <div ref={sentinelRef} className="h-10 mt-6" />}
 
       {/* End message */}
